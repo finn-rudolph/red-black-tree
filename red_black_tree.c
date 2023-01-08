@@ -57,6 +57,11 @@ void rbnode_destroy_nil(RbNode *nil)
     free(nil);
 }
 
+void *rbnode_get_key(RbNode const *const x)
+{
+    return x->key;
+}
+
 RbTree *rbtree_create(size_t value_size, rbtree_compare compare)
 {
     RbTree *t = malloc(sizeof *t);

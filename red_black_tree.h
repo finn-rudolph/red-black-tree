@@ -6,11 +6,11 @@
 
 typedef bool (*rbtree_compare)(void const *const a, void const *const b);
 
-typedef struct RbNode RbNode;
-struct RbNode;
-
 typedef struct RbTree RbTree;
 struct RbTree;
+
+typedef struct RbNode RbNode;
+struct RbNode;
 
 RbTree *rbtree_create(size_t value_size, rbtree_compare compare);
 
@@ -21,3 +21,5 @@ RbNode *rbtree_insert(RbTree *const t, void const *const restrict value);
 void rbtree_delete(RbTree *const t, void const *const restrict value);
 
 RbNode *rbtree_find(RbTree const *const t, void const *const restrict value);
+
+void *rbnode_get_key(RbNode const *const x);
