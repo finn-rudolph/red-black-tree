@@ -10,7 +10,7 @@ int int_less(void const *const a, void const *const b)
 
 int main()
 {
-    RbTree *t = rbtree_create(sizeof(int), int_less);
+    RbTree *t = rb_create(sizeof(int), int_less);
     char command[64];
 
     while (1)
@@ -21,44 +21,44 @@ int main()
         if (!strcmp(command, "insert"))
         {
             scanf("%d", &x);
-            rbtree_insert(t, &x);
+            rb_insert(t, &x);
         }
         else if (!strcmp(command, "delete"))
         {
             scanf("%d", &x);
-            rbtree_delete(t, &x);
+            rb_delete(t, &x);
         }
         else if (!strcmp(command, "find"))
         {
             scanf("%d", &x);
-            if (rbtree_find(t, &x) != rbtree_nil(t))
+            if (rb_find(t, &x) != rb_nil(t))
                 printf("Is in the tree.\n");
             else
                 printf("Is not in the tree\n");
         }
         else if (!strcmp(command, "length"))
         {
-            printf("%zu\n", rbtree_length(t));
+            printf("%zu\n", rb_length(t));
         }
         else if (!strcmp(command, "print-all"))
         {
-            RbNode *node = rbtree_min(t);
+            RbNode *node = rb_min(t);
 
-            while (node != rbtree_nil(t))
+            while (node != rb_nil(t))
             {
-                printf("%d ", *(int *)rbtree_get_key(node));
-                node = rbtree_successor(t, node);
+                printf("%d ", *(int *)rb_get_key(node));
+                node = rb_successor(t, node);
             }
             putchar('\n');
         }
         else if (!strcmp(command, "print-all-reverse"))
         {
-            RbNode *node = rbtree_max(t);
+            RbNode *node = rb_max(t);
 
-            while (node != rbtree_nil(t))
+            while (node != rb_nil(t))
             {
-                printf("%d ", *(int *)rbtree_get_key(node));
-                node = rbtree_predecessor(t, node);
+                printf("%d ", *(int *)rb_get_key(node));
+                node = rb_predecessor(t, node);
             }
             putchar('\n');
         }
@@ -66,5 +66,5 @@ int main()
             break;
     }
 
-    rbtree_destroy(t);
+    rb_destroy(t);
 }
