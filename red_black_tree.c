@@ -152,9 +152,10 @@ RbNode *rbtree_find(RbTree const *const t, void const *const restrict value)
 
     while (x != t->nil)
     {
-        if ((*t->compare)(value, x->key))
+        int const c = (*t->compare)(value, x->key);
+        if (c < 0)
             x = x->left;
-        else if ((*t->compare)(x->key, value))
+        else if (c > 0)
             x = x->right;
         else
             break;
@@ -252,7 +253,7 @@ void rbtree_insert_node(RbTree *const t, RbNode *const z)
     while (x != t->nil)
     {
         y = x;
-        if ((*t->compare)(z->key, x->key))
+        if ((*t->compare)(z->key, x->key) < 0)
             x = x->left;
         else
             x = x->right;
@@ -261,7 +262,7 @@ void rbtree_insert_node(RbTree *const t, RbNode *const z)
     z->parent = y;
     if (y == t->nil)
         t->root = z;
-    else if ((*t->compare)(z->key, y->key))
+    else if ((*t->compare)(z->key, y->key) < 0)
         y->left = z;
     else
         y->right = z;

@@ -4,7 +4,7 @@
 #define RB_RED 0
 #define RB_BLACK 1
 
-typedef bool (*rbtree_compare)(void const *const a, void const *const b);
+typedef int (*rbtree_compare)(void const *const a, void const *const b);
 
 typedef struct RbTree RbTree;
 struct RbTree;

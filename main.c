@@ -3,9 +3,9 @@
 
 #include "red_black_tree.h"
 
-bool int_less(void const *const a, void const *const b)
+int int_less(void const *const a, void const *const b)
 {
-    return *(int *)a < *(int *)b;
+    return *(int *)a - *(int *)b;
 }
 
 int main()
