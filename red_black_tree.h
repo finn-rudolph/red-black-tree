@@ -16,6 +16,8 @@ RbTree *rbtree_create(size_t value_size, rbtree_compare compare);
 
 void rbtree_destroy(RbTree *const t);
 
+RbNode *rbtree_nil(RbTree const *const t);
+
 RbNode *rbtree_insert(RbTree *const t, void const *const restrict value);
 
 void rbtree_delete(RbTree *const t, void const *const restrict value);
@@ -24,4 +26,12 @@ void rbtree_delete(RbTree *const t, void const *const restrict value);
 // doesn't exist.
 RbNode *rbtree_find(RbTree const *const t, void const *const restrict value);
 
-void *rbnode_get_key(RbNode const *const x);
+RbNode *rbtree_min(RbTree const *const t);
+
+RbNode *rbtree_max(RbTree const *const t);
+
+RbNode *rbtree_predecessor(RbTree const *const t, RbNode const *const node);
+
+RbNode *rbtree_successor(RbTree const *const t, RbNode const *const node);
+
+void *rbtree_get_key(RbNode const *const node);

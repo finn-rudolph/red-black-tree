@@ -57,9 +57,9 @@ void rbnode_destroy_nil(RbNode *nil)
     free(nil);
 }
 
-void *rbnode_get_key(RbNode const *const x)
+void *rbtree_get_key(RbNode const *const node)
 {
-    return x->key;
+    return node->key;
 }
 
 RbTree *rbtree_create(size_t value_size, rbtree_compare compare)
@@ -80,7 +80,7 @@ void rbtree_destroy(RbTree *const t)
     free(t);
 }
 
-RbNode *rbtree_get_nil(RbTree const *const t)
+RbNode *rbtree_nil(RbTree const *const t)
 {
     return t->nil;
 }
@@ -125,11 +125,28 @@ void rbtree_right_rotate(RbTree *const t, RbNode *const x)
     x->parent = y;
 }
 
-RbNode *rbtree_min_node(RbTree const *const t, RbNode *root)
+RbNode *rbtree_min_in_subtree(RbTree const *const t, RbNode *root)
 {
     while (root->left != t->nil)
         root = root->left;
     return root;
+}
+
+RbNode *rbtree_max_in_subtree(RbTree const *const t, RbNode *root)
+{
+    while (root->right != t->nil)
+        root = root->right;
+    return root;
+}
+
+RbNode *rbtree_min(RbTree const *const t)
+{
+    return rbtree_min_in_subtree(t, t->root);
+}
+
+RbNode *rbtree_max(RbTree const *const t)
+{
+    return rbtree_max_in_subtree(t, t->root);
 }
 
 RbNode *rbtree_find(RbTree const *const t, void const *const restrict value)
@@ -146,7 +163,37 @@ RbNode *rbtree_find(RbTree const *const t, void const *const restrict value)
             break;
     }
 
-    return x == t->nil ? 0 : x;
+    return x;
+}
+
+RbNode *rbtree_predecessor(RbTree const *const t, RbNode const *node)
+{
+    if (node->left != t->nil)
+        return rbtree_max_in_subtree(t, node->left);
+
+    RbNode *y = node->parent;
+    while (y != t->nil && node == y->left)
+    {
+        node = y;
+        y = y->parent;
+    }
+
+    return y;
+}
+
+RbNode *rbtree_successor(RbTree const *const t, RbNode const *node)
+{
+    if (node->right != t->nil)
+        return rbtree_min_in_subtree(t, node->right);
+
+    RbNode *y = node->parent;
+    while (y != t->nil && node == y->right)
+    {
+        node = y;
+        y = y->parent;
+    }
+
+    return y;
 }
 
 void rbtree_insert_fixup(RbTree *const t, RbNode *z)
@@ -341,7 +388,7 @@ void rbtree_delete_node(RbTree *const t, RbNode *const z)
     }
     else
     {
-        y = rbtree_min_node(t, z->right);
+        y = rbtree_min_in_subtree(t, z->right);
         y_ocolor = y->color;
         x = y->right;
 
@@ -367,6 +414,6 @@ void rbtree_delete_node(RbTree *const t, RbNode *const z)
 void rbtree_delete(RbTree *const t, void const *const restrict value)
 {
     RbNode *const z = rbtree_find(t, value);
-    if (z)
+    if (z != t->nil)
         rbtree_delete_node(t, z);
 }

@@ -31,10 +31,32 @@ int main()
         else if (!strcmp(command, "find"))
         {
             scanf("%d", &x);
-            if (rbtree_find(t, &x))
+            if (rbtree_find(t, &x) != rbtree_nil(t))
                 printf("Is in the tree.\n");
             else
                 printf("Is not in the tree\n");
+        }
+        else if (!strcmp(command, "print-all"))
+        {
+            RbNode *node = rbtree_min(t);
+
+            while (node != rbtree_nil(t))
+            {
+                printf("%d ", *(int *)rbtree_get_key(node));
+                node = rbtree_successor(t, node);
+            }
+            putchar('\n');
+        }
+        else if (!strcmp(command, "print-all-reverse"))
+        {
+            RbNode *node = rbtree_max(t);
+
+            while (node != rbtree_nil(t))
+            {
+                printf("%d ", *(int *)rbtree_get_key(node));
+                node = rbtree_predecessor(t, node);
+            }
+            putchar('\n');
         }
         else if (!strcmp(command, "quit"))
             break;
