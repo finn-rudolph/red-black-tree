@@ -36,6 +36,10 @@ int main()
             else
                 printf("Is not in the tree\n");
         }
+        else if (!strcmp(command, "length"))
+        {
+            printf("%zu\n", rbtree_length(t));
+        }
         else if (!strcmp(command, "print-all"))
         {
             RbNode *node = rbtree_min(t);

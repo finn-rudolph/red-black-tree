@@ -7,7 +7,7 @@
 struct RbTree
 {
     RbNode *root, *nil;
-    size_t value_size;
+    size_t value_size, length;
     rbtree_compare compare;
 };
 
@@ -66,6 +66,7 @@ RbTree *rbtree_create(size_t value_size, rbtree_compare compare)
 {
     RbTree *t = malloc(sizeof *t);
     t->value_size = value_size;
+    t->length = 0;
     t->compare = compare;
     t->nil = rbnode_create_nil();
     t->root = t->nil;
@@ -83,6 +84,11 @@ void rbtree_destroy(RbTree *const t)
 RbNode *rbtree_nil(RbTree const *const t)
 {
     return t->nil;
+}
+
+size_t rbtree_length(RbTree const *const t)
+{
+    return t->length;
 }
 
 void rbtree_left_rotate(RbTree *const t, RbNode *const x)
@@ -249,6 +255,7 @@ void rbtree_insert_fixup(RbTree *const t, RbNode *z)
 
 void rbtree_insert_node(RbTree *const t, RbNode *const z)
 {
+    t->length++;
     RbNode *y = t->nil, *x = t->root;
 
     while (x != t->nil)
@@ -373,6 +380,7 @@ void rbtree_delete_fixup(RbTree *const t, RbNode *x)
 
 void rbtree_delete_node(RbTree *const t, RbNode *const z)
 {
+    t->length--;
     RbNode *y = z, *x = 0;
     bool y_ocolor = y->color;
 
