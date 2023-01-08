@@ -1,10 +1,11 @@
 #include <stddef.h>
 #include <stdbool.h>
+#include <stdio.h>
 
 #define RB_RED 0
 #define RB_BLACK 1
 
-typedef int (*rbtree_compare)(void const *const a, void const *const b);
+typedef int (*rbtree_compare_fn)(void const *const a, void const *const b);
 
 typedef struct RbTree RbTree;
 struct RbTree;
@@ -12,7 +13,7 @@ struct RbTree;
 typedef struct RbNode RbNode;
 struct RbNode;
 
-RbTree *rbtree_create(size_t value_size, rbtree_compare compare);
+RbTree *rbtree_create(size_t value_size, rbtree_compare_fn compare);
 
 void rbtree_destroy(RbTree *const t);
 

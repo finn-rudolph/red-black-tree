@@ -7,7 +7,7 @@
 struct RbTree
 {
     size_t value_size, length;
-    rbtree_compare compare;
+    rbtree_compare_fn compare;
     RbNode *root, *nil;
 };
 
@@ -48,7 +48,7 @@ inline void *rbtree_get_key(RbNode const *const node)
     return node->key;
 }
 
-RbTree *rbtree_create(size_t value_size, rbtree_compare compare)
+RbTree *rbtree_create(size_t value_size, rbtree_compare_fn compare)
 {
     RbTree *t = malloc(sizeof *t);
     t->value_size = value_size;
@@ -84,7 +84,7 @@ inline size_t rbtree_length(RbTree const *const t)
 
 void rbtree_left_rotate(RbTree *const t, RbNode *const x)
 {
-    RbNode *const y = x->right;
+    RbNode *const restrict y = x->right;
 
     x->right = y->left;
     if (y->left != t->nil)
@@ -104,7 +104,7 @@ void rbtree_left_rotate(RbTree *const t, RbNode *const x)
 
 void rbtree_right_rotate(RbTree *const t, RbNode *const x)
 {
-    RbNode *const y = x->left;
+    RbNode *const restrict y = x->left;
 
     x->left = y->right;
     if (y->right != t->nil)
@@ -200,7 +200,7 @@ void rbtree_insert_fixup(RbTree *const t, RbNode *z)
     {
         if (z->parent == z->parent->parent->left)
         {
-            RbNode *const y = z->parent->parent->right; // z's uncle
+            RbNode *const restrict y = z->parent->parent->right; // z's uncle
             if (y->color == RB_RED)
             {
                 z->parent->color = RB_BLACK;
@@ -222,7 +222,7 @@ void rbtree_insert_fixup(RbTree *const t, RbNode *z)
         }
         else
         {
-            RbNode *const y = z->parent->parent->left;
+            RbNode *const restrict y = z->parent->parent->left;
             if (y->color == RB_RED)
             {
                 z->parent->color = RB_BLACK;
