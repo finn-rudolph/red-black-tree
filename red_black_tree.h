@@ -7,25 +7,14 @@
 typedef bool (*rbtree_compare)(void const *const a, void const *const b);
 
 typedef struct RbNode RbNode;
-struct RbNode
-{
-    RbNode *parent, *left, *right;
-    void *key;
-    bool color;
-};
+struct RbNode;
 
 typedef struct RbTree RbTree;
-struct RbTree
-{
-    RbNode *root;
-    RbNode *nil;
-    size_t const value_size;
-    rbtree_compare const compare;
-};
+struct RbTree;
 
-RbTree rbtree_create(size_t value_size, rbtree_compare compare);
+RbTree *rbtree_create(size_t value_size, rbtree_compare compare);
 
-void rbtree_destroy(RbTree const *const t);
+void rbtree_destroy(RbTree *const t);
 
 RbNode *rbtree_insert(RbTree *const t, void const *const restrict value);
 

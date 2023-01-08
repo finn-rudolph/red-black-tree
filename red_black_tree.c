@@ -1,7 +1,22 @@
 #include <stdlib.h>
 #include <memory.h>
+#include <assert.h>
 
 #include "red_black_tree.h"
+
+struct RbTree
+{
+    RbNode *root, *nil;
+    size_t value_size;
+    rbtree_compare compare;
+};
+
+struct RbNode
+{
+    RbNode *parent, *left, *right;
+    void *key;
+    bool color;
+};
 
 RbNode *rbnode_create(
     size_t value_size, void const *const restrict value, RbNode *nil)
@@ -26,6 +41,8 @@ RbNode *rbnode_create_nil()
 
 void rbnode_destroy_subtree(RbTree const *const t, RbNode *x)
 {
+    assert(x != t->nil);
+
     if (x->left != t->nil)
         rbnode_destroy_subtree(t, x->left);
     if (x->right != t->nil)
@@ -40,21 +57,22 @@ void rbnode_destroy_nil(RbNode *nil)
     free(nil);
 }
 
-RbTree rbtree_create(size_t value_size, rbtree_compare compare)
+RbTree *rbtree_create(size_t value_size, rbtree_compare compare)
 {
-    RbTree t = {
-        .value_size = value_size,
-        .compare = compare,
-        .nil = rbnode_create_nil()};
-    t.root = t.nil;
+    RbTree *t = malloc(sizeof *t);
+    t->value_size = value_size;
+    t->compare = compare;
+    t->nil = rbnode_create_nil();
+    t->root = t->nil;
     return t;
 }
 
-void rbtree_destroy(RbTree const *const t)
+void rbtree_destroy(RbTree *const t)
 {
     if (t->root != t->nil)
         rbnode_destroy_subtree(t, t->root);
     rbnode_destroy_nil(t->nil);
+    free(t);
 }
 
 void rbtree_left_rotate(RbTree *const t, RbNode *const x)
