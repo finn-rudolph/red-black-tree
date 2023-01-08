@@ -6,9 +6,9 @@
 
 struct RbTree
 {
-    RbNode *root, *nil;
     size_t value_size, length;
     rbtree_compare compare;
+    RbNode *root, *nil;
 };
 
 struct RbNode
@@ -30,15 +30,6 @@ RbNode *rbnode_create(
     return z;
 }
 
-RbNode *rbnode_create_nil()
-{
-    RbNode *z = malloc(sizeof *z);
-    z->color = RB_BLACK;
-    z->key = 0;
-    z->left = z->right = z->parent = z;
-    return z;
-}
-
 void rbnode_destroy_subtree(RbTree const *const t, RbNode *x)
 {
     assert(x != t->nil);
@@ -52,12 +43,7 @@ void rbnode_destroy_subtree(RbTree const *const t, RbNode *x)
     free(x);
 }
 
-void rbnode_destroy_nil(RbNode *nil)
-{
-    free(nil);
-}
-
-void *rbtree_get_key(RbNode const *const node)
+inline void *rbtree_get_key(RbNode const *const node)
 {
     return node->key;
 }
@@ -68,8 +54,13 @@ RbTree *rbtree_create(size_t value_size, rbtree_compare compare)
     t->value_size = value_size;
     t->length = 0;
     t->compare = compare;
-    t->nil = rbnode_create_nil();
+
+    t->nil = malloc(sizeof *t->nil);
+    t->nil->left = t->nil->right = t->nil->parent = t->nil;
+    t->nil->key = 0;
+    t->nil->color = RB_BLACK;
     t->root = t->nil;
+
     return t;
 }
 
@@ -77,16 +68,16 @@ void rbtree_destroy(RbTree *const t)
 {
     if (t->root != t->nil)
         rbnode_destroy_subtree(t, t->root);
-    rbnode_destroy_nil(t->nil);
+    free(t->nil);
     free(t);
 }
 
-RbNode *rbtree_nil(RbTree const *const t)
+inline RbNode *rbtree_nil(RbTree const *const t)
 {
     return t->nil;
 }
 
-size_t rbtree_length(RbTree const *const t)
+inline size_t rbtree_length(RbTree const *const t)
 {
     return t->length;
 }

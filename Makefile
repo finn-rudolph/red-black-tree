@@ -1,5 +1,5 @@
 CC = clang
-CFLAGS = -Wall -g
+CFLAGS = -Wall -O3 -DNDEBUG -march=native
 
 obj = red_black_tree.o main.o
 

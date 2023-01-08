@@ -24,8 +24,6 @@ void rbtree_delete(RbTree *const t, void const *const restrict value);
 
 size_t rbtree_length(RbTree const *const t);
 
-// Returns a pointer to the node with value as the key, or 0, if the value
-// doesn't exist.
 RbNode *rbtree_find(RbTree const *const t, void const *const restrict value);
 
 RbNode *rbtree_min(RbTree const *const t);
