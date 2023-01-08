@@ -30,6 +30,12 @@ RbNode *rb_create_node(
     return z;
 }
 
+void rb_destroy_node(RbNode *const x)
+{
+    free(x->key);
+    free(x);
+}
+
 void rb_destroy_subtree(RbTree const *const t, RbNode *x)
 {
     assert(x != t->nil);
@@ -415,5 +421,8 @@ void rb_delete(RbTree *const t, void const *const restrict value)
 {
     RbNode *const z = rb_find(t, value);
     if (z != t->nil)
+    {
         rb_delete_node(t, z);
+        rb_destroy_node(z);
+    }
 }
