@@ -80,6 +80,11 @@ void rbtree_destroy(RbTree *const t)
     free(t);
 }
 
+RbNode *rbtree_get_nil(RbTree const *const t)
+{
+    return t->nil;
+}
+
 void rbtree_left_rotate(RbTree *const t, RbNode *const x)
 {
     RbNode *const y = x->right;
@@ -141,7 +146,7 @@ RbNode *rbtree_find(RbTree const *const t, void const *const restrict value)
             break;
     }
 
-    return x;
+    return x == t->nil ? 0 : x;
 }
 
 void rbtree_insert_fixup(RbTree *const t, RbNode *z)
@@ -361,5 +366,7 @@ void rbtree_delete_node(RbTree *const t, RbNode *const z)
 
 void rbtree_delete(RbTree *const t, void const *const restrict value)
 {
-    rbtree_delete_node(t, rbtree_find(t, value));
+    RbNode *const z = rbtree_find(t, value);
+    if (z)
+        rbtree_delete_node(t, z);
 }
