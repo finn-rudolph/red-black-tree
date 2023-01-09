@@ -10,7 +10,15 @@ int int_less(void const *const a, void const *const b)
 
 void int_print(void const *const x)
 {
-    printf("%4d", *(int *)x);
+    size_t const size = 4;
+    char buffer[size];
+    memset(buffer, 0, size);
+    sprintf(buffer, "%d", *(int *)x);
+    for (size_t i = 0; i < (size - strlen(buffer)) / 2; i++)
+        putchar(' ');
+    printf("%s", buffer);
+    for (size_t i = 0; i < (size - strlen(buffer) + 1) / 2; i++)
+        putchar(' ');
 }
 
 int main()
