@@ -1,5 +1,51 @@
 # Type-Generic Red-Black Tree in C
 
-First, include `red_black_tree.h`. To create a Red-Black Tree, call `rb_create` and specify the size of the data to be stored as well as a comparison function. The comparison function takes the same form as for `qsort` from the C standard library. An `RbTree *` is returned, which is needed for all further operations. Values for insertion, deletion, find, etc. are provied via a `void *`, they are be copied to internally managed memory (so the object the `void *` points to can be modified after the operation). After using the Red-Black Tree, `rb_destroy` with the `RbTree *` pointer returned from `rb_create` must be called.
+To use the tree, include `red_black_tree.h`. The supported functionality is documented below. Note that the two objects `RbTree` and `RbNode` are not abstract, this allows declaring some functions as `inline`. However, the objects shall never be modified directly.
 
-The functions to find an element or the minimum / maximum in the tree return a handle of type `RbNode *`. To get the value in the node, use `rbtree_get_key`. The functions `rb_predecessor` and `rb_successor` return the previous / next node in the order specified by the comparison function, they can be used to iterate over the tree. When a node has no predecessor or successor, a special nil-node is returned. To test whether an `RbNode *` points to such a node, compare against the return value of `rb_nil` for equality. Doing anything else with a nil-node like trying to get a value is undefined behaviour. 
+**`RbTree *rb_create(size_t key_size, rb_compare_fn compare)`**
+
+Creates a new Red-Black Tree object and returns an `RbTree *` needed for further operations on the tree. The size of the keys to be stored as well as a comparison function (same form as for `qsort`) must be provided.
+
+**`void rb_destroy(RbTree *const t)`**
+
+Must be called after using the Red-Black Tree.
+
+**`RbNode *rb_nil(RbTree const *const t)`**
+
+Returns the nil-node of the Red-Black Tree. This special node can be returned from `rb_find`, `rb_min`, `rb_max`, `rb_predecessor` and `rb_sucessor`. It signifies that the queried node does not exist. Doing anything else with a nil-node than comparing it with the return value of this function for equality is undefined behaviour.
+
+**`RbNode *rb_insert(RbTree *const t, void const *const restrict key)`**
+
+Inserts the key pointed to into the tree and returns the newly created node.
+
+**`void rb_delete(RbTree *const t, void const *const restrict key)`**
+
+Deletes the given key from the tree.
+
+**`size_t rb_length(RbTree const *const t)`**
+
+Returns the number of elements in the tree.
+
+**`RbNode *rb_find(RbTree const *const t, void const *const restrict key)`**
+
+Returns a pointer to the node containing the given key or the nil-node, if the key does not exist.
+
+**`RbNode *rb_min(RbTree const *const t)`**
+
+Returns the node with the least key. 
+
+**`RbNode *rb_max(RbTree const *const t)`**
+
+Returns the node with greatest key.
+
+**`RbNode *rb_predecessor(RbTree const *const t, RbNode const *const node)`**
+
+Returns the previous node in the order given by the comparison function.
+
+**`RbNode *rb_successor(RbTree const *const t, RbNode const *const node)`**
+
+Returns the next node in the order given by the comparison function.
+
+**`void *rb_get_key(RbNode const *const node)`**
+
+Used to get the key of a node.
