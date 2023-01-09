@@ -4,28 +4,25 @@
 
 #include "red_black_tree.h"
 
-struct RbTree
-{
-    size_t value_size, length;
-    rb_compare_fn compare;
-    RbNode *root, *nil;
-};
+// Ensure emission of inline functions in red_black_tree.h.
+RbNode *rb_min(RbTree const *const t);
 
-struct RbNode
-{
-    RbNode *parent, *left, *right;
-    void *key;
-    bool color;
-};
+RbNode *rb_max(RbTree const *const t);
+
+RbNode *rb_nil(RbTree const *const t);
+
+size_t rb_length(RbTree const *const t);
+
+void *rb_get_key(RbNode const *const node);
 
 RbNode *rb_create_node(
-    size_t value_size, void const *const restrict value, RbNode *nil)
+    size_t key_size, void const *const restrict key, RbNode *nil)
 {
     RbNode *z = malloc(sizeof *z);
     z->left = z->right = z->parent = nil;
-    z->key = malloc(value_size);
+    z->key = malloc(key_size);
     z->color = RB_BLACK;
-    memcpy(z->key, value, value_size);
+    memcpy(z->key, key, key_size);
 
     return z;
 }
@@ -49,15 +46,10 @@ void rb_destroy_subtree(RbTree const *const t, RbNode *x)
     free(x);
 }
 
-inline void *rb_get_key(RbNode const *const node)
-{
-    return node->key;
-}
-
-RbTree *rb_create(size_t value_size, rb_compare_fn compare)
+RbTree *rb_create(size_t key_size, rb_compare_fn compare)
 {
     RbTree *t = malloc(sizeof *t);
-    t->value_size = value_size;
+    t->key_size = key_size;
     t->length = 0;
     t->compare = compare;
 
@@ -76,16 +68,6 @@ void rb_destroy(RbTree *const t)
         rb_destroy_subtree(t, t->root);
     free(t->nil);
     free(t);
-}
-
-inline RbNode *rb_nil(RbTree const *const t)
-{
-    return t->nil;
-}
-
-inline size_t rb_length(RbTree const *const t)
-{
-    return t->length;
 }
 
 void rb_left_rotate(RbTree *const t, RbNode *const x)
@@ -142,23 +124,13 @@ RbNode *rb_max_in_subtree(RbTree const *const t, RbNode *root)
     return root;
 }
 
-RbNode *rb_min(RbTree const *const t)
-{
-    return rb_min_in_subtree(t, t->root);
-}
-
-RbNode *rb_max(RbTree const *const t)
-{
-    return rb_max_in_subtree(t, t->root);
-}
-
-RbNode *rb_find(RbTree const *const t, void const *const restrict value)
+RbNode *rb_find(RbTree const *const t, void const *const restrict key)
 {
     RbNode *x = t->root;
 
     while (x != t->nil)
     {
-        int const c = (*t->compare)(value, x->key);
+        int const c = (*t->compare)(key, x->key);
         if (c < 0)
             x = x->left;
         else if (c > 0)
@@ -281,9 +253,9 @@ void rb_insert_node(RbTree *const t, RbNode *const z)
     t->root->color = RB_BLACK;
 }
 
-RbNode *rb_insert(RbTree *const t, void const *const restrict value)
+RbNode *rb_insert(RbTree *const t, void const *const restrict key)
 {
-    RbNode *const z = rb_create_node(t->value_size, value, t->nil);
+    RbNode *const z = rb_create_node(t->key_size, key, t->nil);
     rb_insert_node(t, z);
     return z;
 }
@@ -417,9 +389,9 @@ void rb_delete_node(RbTree *const t, RbNode *const z)
         rb_delete_fixup(t, x);
 }
 
-void rb_delete(RbTree *const t, void const *const restrict value)
+void rb_delete(RbTree *const t, void const *const restrict key)
 {
-    RbNode *const z = rb_find(t, value);
+    RbNode *const z = rb_find(t, key);
     if (z != t->nil)
     {
         rb_delete_node(t, z);
