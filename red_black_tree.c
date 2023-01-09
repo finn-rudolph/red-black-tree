@@ -4,6 +4,13 @@
 
 #include "red_black_tree.h"
 
+// For rb_print.
+#define EDGE_CHAR '-'
+#define ANSI_COLOR_RED "\x1b[31m"
+#define ANSI_COLOR_RESET "\x1b[0m"
+
+#define max(x, y) (((x) > (y)) ? (x) : (y))
+
 // Ensure emission of inline functions in red_black_tree.h.
 RbNode *rb_min(RbTree const *const t);
 
@@ -397,4 +404,86 @@ void rb_delete(RbTree *const t, void const *const restrict key)
         rb_delete_node(t, z);
         rb_destroy_node(z);
     }
+}
+
+size_t rb_height(RbTree const *const t, RbNode const *const node)
+{
+    return max(node->left == t->nil ? 0 : (rb_height(t, node->left) + 1),
+               node->right == t->nil ? 0 : (rb_height(t, node->right) + 1));
+}
+
+void print_n_times(size_t const n, char const c)
+{
+    for (size_t i = 0; i < n; i++)
+        putchar(c);
+}
+
+void rb_print(
+    RbTree const *const t, rb_print_fn print_key, size_t node_width)
+{
+    size_t const height = rb_height(t, t->root);
+    size_t curr_width = node_width * (1ULL << (height + 1));
+
+    RbNode **q = malloc((1ULL << (height + 1)) * sizeof *q);
+    q[1] = t->root;
+
+    for (size_t i = 0; i <= height; i++)
+    {
+        for (size_t j = 1ULL << i; j < 1ULL << (i + 1); j++)
+        {
+            if (q[j] != t->nil)
+            {
+                print_n_times((curr_width - node_width) / 2, ' ');
+
+                if (q[j]->color == RB_RED)
+                    printf(ANSI_COLOR_RED);
+
+                (*print_key)(q[j]->key);
+
+                if (q[j]->color == RB_RED)
+                    printf(ANSI_COLOR_RESET);
+
+                print_n_times((curr_width - node_width + 1) / 2, ' ');
+
+                if (j < (1ULL << height))
+                {
+                    q[2 * j] = q[j]->left;
+                    q[2 * j + 1] = q[j]->right;
+                }
+            }
+            else
+            {
+                print_n_times(curr_width, ' ');
+
+                if (j < (1ULL << height))
+                {
+                    q[2 * j] = t->nil;
+                    q[2 * j + 1] = t->nil;
+                }
+            }
+        }
+
+        putchar('\n');
+
+        for (size_t j = 1ULL << i; j < 1ULL << (i + 1); j++)
+        {
+            print_n_times((curr_width + 1) / 4, ' ');
+            if (q[j] != t->nil)
+            {
+                print_n_times((curr_width + 3) / 4,
+                              q[j]->left == t->nil ? ' ' : EDGE_CHAR);
+                print_n_times(curr_width / 4,
+                              q[j]->right == t->nil ? ' ' : EDGE_CHAR);
+            }
+            else
+                print_n_times((curr_width + 1) / 2, ' ');
+
+            print_n_times((curr_width + 2) / 4, ' ');
+        }
+
+        putchar('\n');
+        curr_width >>= 1;
+    }
+
+    free(q);
 }

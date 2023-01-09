@@ -49,3 +49,7 @@ Returns the next node in the order given by the comparison function.
 **`void *rb_get_key(RbNode const *const node)`**
 
 Used to get the key of a node.
+
+**`void rb_print(RbTree const *const t, rb_print_fn print_key, size_t node_width)`**
+
+Prints the tree structure of the Red-Black Tree to the terminal. The user must provide a function of type `rb_print_fn` (defined in `red_black_tree.h`) which receives a `void *` of a node key and prints some string representing that node to Standard Output. Exactly `node_width` characters must be printed and new lines are not allowed. Red nodes are automatically printed red.

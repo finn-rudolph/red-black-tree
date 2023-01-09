@@ -7,6 +7,8 @@
 
 typedef int (*rb_compare_fn)(void const *const a, void const *const b);
 
+typedef void (*rb_print_fn)(void const *const x);
+
 typedef struct RbNode RbNode;
 struct RbNode
 {
@@ -36,6 +38,9 @@ RbNode *rb_find(RbTree const *const t, void const *const restrict key);
 RbNode *rb_predecessor(RbTree const *const t, RbNode const *const node);
 
 RbNode *rb_successor(RbTree const *const t, RbNode const *const node);
+
+void rb_print(
+    RbTree const *const t, rb_print_fn print_key, size_t node_width);
 
 inline RbNode *rb_min(RbTree const *const t)
 {

@@ -8,6 +8,11 @@ int int_less(void const *const a, void const *const b)
     return *(int *)a - *(int *)b;
 }
 
+void int_print(void const *const x)
+{
+    printf("%4d", *(int *)x);
+}
+
 int main()
 {
     RbTree *t = rb_create(sizeof(int), int_less);
@@ -40,7 +45,7 @@ int main()
         {
             printf("%zu\n", rb_length(t));
         }
-        else if (!strcmp(command, "print-all"))
+        else if (!strcmp(command, "print"))
         {
             RbNode *node = rb_min(t);
 
@@ -51,7 +56,7 @@ int main()
             }
             putchar('\n');
         }
-        else if (!strcmp(command, "print-all-reverse"))
+        else if (!strcmp(command, "print-reverse"))
         {
             RbNode *node = rb_max(t);
 
@@ -61,6 +66,10 @@ int main()
                 node = rb_predecessor(t, node);
             }
             putchar('\n');
+        }
+        else if (!strcmp(command, "print-tree"))
+        {
+            rb_print(t, int_print, 4);
         }
         else if (!strcmp(command, "quit"))
             break;
