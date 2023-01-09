@@ -1,6 +1,6 @@
 # Type-Generic Red-Black Tree in C
 
-To use the tree, include `red_black_tree.h`. The supported functionality is documented below. Note that the two objects `RbTree` and `RbNode` are not abstract, this allows declaring some functions as `inline`. However, the objects shall never be modified directly.
+To use the tree, include `red_black_tree.h`. The supported functionality is documented below. Note that the two objects `RbTree` and `RbNode` are not abstract, this allows declaring some functions as `inline`. However, the objects shall never be modified directly. The tree operations can be tested manually with the program in `main.c`.
 
 **`RbTree *rb_create(size_t key_size, rb_compare_fn compare)`**
 
