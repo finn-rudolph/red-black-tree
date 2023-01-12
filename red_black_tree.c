@@ -28,6 +28,7 @@ RbNode *rb_create_node(
     RbNode *z = malloc(sizeof *z);
     z->left = z->right = z->parent = nil;
     z->key = malloc(key_size);
+    z->subtree_size = 1;
     z->color = RB_BLACK;
     memcpy(z->key, key, key_size);
 
@@ -44,6 +45,7 @@ RbTree *rb_create(size_t key_size, rb_compare_fn compare)
     t->nil = malloc(sizeof *t->nil);
     t->nil->left = t->nil->right = t->nil->parent = t->nil;
     t->nil->key = 0;
+    t->nil->subtree_size = 0;
     t->nil->color = RB_BLACK;
     t->root = t->nil;
 
@@ -95,6 +97,9 @@ void rb_left_rotate(RbTree *const t, RbNode *const x)
 
     y->left = x;
     x->parent = y;
+
+    x->subtree_size = 1 + x->left->subtree_size + x->right->subtree_size;
+    y->subtree_size = 1 + y->left->subtree_size + y->right->subtree_size;
 }
 
 void rb_right_rotate(RbTree *const t, RbNode *const x)
@@ -115,6 +120,9 @@ void rb_right_rotate(RbTree *const t, RbNode *const x)
 
     y->right = x;
     x->parent = y;
+
+    x->subtree_size = 1 + x->left->subtree_size + x->right->subtree_size;
+    y->subtree_size = 1 + y->left->subtree_size + y->right->subtree_size;
 }
 
 void rb_insert_fixup(RbTree *const t, RbNode *z)
@@ -173,9 +181,11 @@ void rb_insert_node(RbTree *const t, RbNode *const z)
     t->length++;
     RbNode *y = t->nil, *x = t->root;
 
+    // Go down to a leaf y and set z as the appropriate successor.
     while (x != t->nil)
     {
         y = x;
+        y->subtree_size++;
         if ((*t->compare)(z->key, x->key) < 0)
             x = x->left;
         else
@@ -333,6 +343,14 @@ void rb_delete_node(RbTree *const t, RbNode *const z)
             x->parent = y;
         else
         {
+            // Update subtree size on the path to z.
+            RbNode *w = y->parent;
+            while (w != z)
+            {
+                w->subtree_size--;
+                w = w->parent;
+            }
+
             rb_transplant(t, y, y->right);
             y->right = z->right;
             y->right->parent = y;
@@ -342,6 +360,15 @@ void rb_delete_node(RbTree *const t, RbNode *const z)
         y->left = z->left;
         y->left->parent = y;
         y->color = z->color;
+
+        y->subtree_size = 1 + y->left->subtree_size + y->right->subtree_size;
+        y = y->parent;
+    }
+
+    while (y != t->nil)
+    {
+        y->subtree_size--;
+        y = y->parent;
     }
 
     if (y_ocolor == RB_BLACK)

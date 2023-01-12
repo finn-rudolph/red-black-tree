@@ -15,6 +15,7 @@ struct RbNode
 {
     RbNode *parent, *left, *right;
     void *key;
+    size_t subtree_size;
     bool color;
 };
 
