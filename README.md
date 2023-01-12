@@ -2,6 +2,8 @@
 
 To use the tree, include `red_black_tree.h`. Standard Red-Black Tree operations as well as order-statistics operations are supported, as documented below. Note that the two objects `RbTree` and `RbNode` are not abstract, this allows declaring some functions as `inline`. However, the objects shall never be modified directly. The tree operations can be tested in the terminal with the program in `main.c`.
 
+## Creation and destruction
+
 **`RbTree *rb_create(size_t key_size, rb_compare_fn compare)`**
 
 Creates a new Red-Black Tree object and returns an `RbTree *` needed for further operations on the tree. The size of the keys to be stored as well as a comparison function (same form as for `qsort`) must be provided.
@@ -10,13 +12,7 @@ Creates a new Red-Black Tree object and returns an `RbTree *` needed for further
 
 Must be called after using the Red-Black Tree.
 
-**`RbNode *rb_nil(RbTree const *const t)`**
-
-Returns the nil-node of the Red-Black Tree. This special node can be returned from `rb_find`, `rb_min`, `rb_max`, `rb_predecessor` and `rb_sucessor`. It signifies that the queried node does not exist. Doing anything else with a nil-node than comparing it with the return value of this function for equality is undefined behaviour.
-
-**`void *rb_get_key(RbNode const *const node)`**
-
-Get the key of a node.
+## Insertion and Deletion
 
 **`RbNode *rb_insert(RbTree *const t, void const *const restrict key)`**
 
@@ -30,9 +26,19 @@ Deletes the given key from the tree.
 
 Deletes all nodes from the tree, but leaves the tree itself valid. Calling this on any valid Red-Black Tree `t` puts `t` in a state as if it was just returned from `rb_create`.
 
+## Querying the Red-Black Tree
+
 **`size_t rb_length(RbTree const *const t)`**
 
 Returns the number of elements in the tree.
+
+**`RbNode *rb_nil(RbTree const *const t)`**
+
+Returns the nil-node of the Red-Black Tree. This special node can be returned from `rb_find`, `rb_min`, `rb_max`, `rb_predecessor` and `rb_sucessor`. It signifies that the queried node does not exist. Doing anything else with a nil-node than comparing it with the return value of this function for equality is undefined behaviour.
+
+**`void *rb_get_key(RbNode const *const node)`**
+
+Get the key of a node.
 
 **`RbNode *rb_find(RbTree const *const t, void const *const restrict key)`**
 
@@ -62,13 +68,21 @@ Returns the previous node in the order given by the comparison function.
 
 Returns the next node in the order given by the comparison function.
 
-**`size_t rb_rank(RbTree const *const t, void const *const restrict key)`**
+## Order-Statistics Operations
 
-Returns the number of elements in the tree smaller than the given key. (Or, the index of the first occurence of `key` in a sorted array of all elements.)
+**`size_t rb_count_less(RbTree const *const t, void const *const restrict key)`**
+
+Returns the number of elements in the tree less than the given key. (Or, the index of the first occurence of `key` in a sorted array of all elements.)
+
+**`size_t rb_count_less_eq(RbTree const *const t, void const *const restrict key)`**
+
+Returns the number of elements in the tree less than or equal to the given key. (Or, the index of the element after the last occurence of `key` in a sorted array of all elements.)
 
 **`RbNode *rb_find_ith(RbTree const *const t, size_t i)`**
 
-Finds a node having exactly i smaller or equal elements in the tree. (Or, equivalently, the i-th element in a sorted array of all elements in the tree.)
+Finds a node having exactly i less or equal elements in the tree. (Or, equivalently, the i-th element in a sorted array of all elements in the tree.)
+
+## Printing the Red-Black Tree to the terminal
 
 **`void rb_print(RbTree const *const t, rb_print_fn print_key, size_t node_width)`**
 

@@ -47,7 +47,9 @@ RbNode *rb_predecessor(RbTree const *const t, RbNode const *const node);
 
 RbNode *rb_successor(RbTree const *const t, RbNode const *const node);
 
-size_t rb_rank(RbTree const *const t, void const *const restrict key);
+size_t rb_count_less(RbTree const *const t, void const *const restrict key);
+
+size_t rb_count_less_eq(RbTree const *const t, void const *const restrict key);
 
 RbNode *rb_find_ith(RbTree const *const t, size_t i);
 

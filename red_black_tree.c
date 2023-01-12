@@ -551,7 +551,7 @@ void rb_print(
     free(q);
 }
 
-size_t rb_rank(RbTree const *const t, void const *const restrict key)
+size_t rb_count_less(RbTree const *const t, void const *const restrict key)
 {
     RbNode *z = t->root;
     size_t rank = 0;
@@ -559,6 +559,25 @@ size_t rb_rank(RbTree const *const t, void const *const restrict key)
     while (z != t->nil)
     {
         if ((*t->compare)(key, z->key) <= 0)
+            z = z->left;
+        else
+        {
+            rank += z->left->subtree_size + 1;
+            z = z->right;
+        }
+    }
+
+    return rank;
+}
+
+size_t rb_count_less_eq(RbTree const *const t, void const *const restrict key)
+{
+    RbNode *z = t->root;
+    size_t rank = 0;
+
+    while (z != t->nil)
+    {
+        if ((*t->compare)(key, z->key) < 0)
             z = z->left;
         else
         {
