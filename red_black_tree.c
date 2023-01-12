@@ -423,7 +423,7 @@ RbNode *rb_lower_bound(RbTree const *const t, void const *const restrict key)
 
         if (c <= 0)
             x = x->left;
-        else if (c > 0)
+        else
             x = x->right;
     }
 
@@ -443,7 +443,7 @@ RbNode *rb_upper_bound(RbTree const *const t, void const *const restrict key)
 
         if (c < 0)
             x = x->left;
-        else if (c >= 0)
+        else
             x = x->right;
     }
 
@@ -549,4 +549,45 @@ void rb_print(
     }
 
     free(q);
+}
+
+size_t rb_rank(RbTree const *const t, void const *const restrict key)
+{
+    RbNode *z = t->root;
+    size_t rank = 0;
+
+    while (z != t->nil)
+    {
+        if ((*t->compare)(key, z->key) <= 0)
+            z = z->left;
+        else
+        {
+            rank += z->left->subtree_size + 1;
+            z = z->right;
+        }
+    }
+
+    return rank;
+}
+
+RbNode *rb_find_ith(RbTree const *const t, size_t i)
+{
+    assert(i < t->length);
+
+    RbNode *z = t->root;
+
+    while (z != t->nil)
+    {
+        if (z->left->subtree_size < i)
+        {
+            i -= z->left->subtree_size + 1;
+            z = z->right;
+        }
+        else if (z->left->subtree_size > i)
+            z = z->left;
+        else
+            return z;
+    }
+
+    return z;
 }

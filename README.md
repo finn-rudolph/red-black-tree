@@ -1,6 +1,6 @@
 # Type-Generic Red-Black Tree in C
 
-To use the tree, include `red_black_tree.h`. The supported functionality is documented below. Note that the two objects `RbTree` and `RbNode` are not abstract, this allows declaring some functions as `inline`. However, the objects shall never be modified directly. The tree operations can be tested manually with the program in `main.c`.
+To use the tree, include `red_black_tree.h`. Standard Red-Black Tree operations as well as order-statistics operations are supported, as documented below. Note that the two objects `RbTree` and `RbNode` are not abstract, this allows declaring some functions as `inline`. However, the objects shall never be modified directly. The tree operations can be tested in the terminal with the program in `main.c`.
 
 **`RbTree *rb_create(size_t key_size, rb_compare_fn compare)`**
 
@@ -13,6 +13,10 @@ Must be called after using the Red-Black Tree.
 **`RbNode *rb_nil(RbTree const *const t)`**
 
 Returns the nil-node of the Red-Black Tree. This special node can be returned from `rb_find`, `rb_min`, `rb_max`, `rb_predecessor` and `rb_sucessor`. It signifies that the queried node does not exist. Doing anything else with a nil-node than comparing it with the return value of this function for equality is undefined behaviour.
+
+**`void *rb_get_key(RbNode const *const node)`**
+
+Get the key of a node.
 
 **`RbNode *rb_insert(RbTree *const t, void const *const restrict key)`**
 
@@ -58,9 +62,13 @@ Returns the previous node in the order given by the comparison function.
 
 Returns the next node in the order given by the comparison function.
 
-**`void *rb_get_key(RbNode const *const node)`**
+**`size_t rb_rank(RbTree const *const t, void const *const restrict key)`**
 
-Used to get the key of a node.
+Returns the number of elements in the tree smaller than the given key. (Or, the index of the first occurence of `key` in a sorted array of all elements.)
+
+**`RbNode *rb_find_ith(RbTree const *const t, size_t i)`**
+
+Finds a node having exactly i smaller or equal elements in the tree. (Or, equivalently, the i-th element in a sorted array of all elements in the tree.)
 
 **`void rb_print(RbTree const *const t, rb_print_fn print_key, size_t node_width)`**
 

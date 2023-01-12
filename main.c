@@ -49,6 +49,16 @@ int main()
             else
                 printf("Is not in the tree\n");
         }
+        else if (!strcmp(command, "rank"))
+        {
+            scanf("%d", &x);
+            printf("%zu\n", rb_rank(t, &x));
+        }
+        else if (!strcmp(command, "find-ith"))
+        {
+            scanf("%d", &x);
+            printf("%d\n", *(int *)rb_get_key(rb_find_ith(t, x)));
+        }
         else if (!strcmp(command, "length"))
         {
             printf("%zu\n", rb_length(t));
