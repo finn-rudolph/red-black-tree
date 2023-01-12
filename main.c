@@ -55,28 +55,6 @@ int main()
         }
         else if (!strcmp(command, "print"))
         {
-            RbNode *node = rb_min(t);
-
-            while (node != rb_nil(t))
-            {
-                printf("%d ", *(int *)rb_get_key(node));
-                node = rb_successor(t, node);
-            }
-            putchar('\n');
-        }
-        else if (!strcmp(command, "print-reverse"))
-        {
-            RbNode *node = rb_max(t);
-
-            while (node != rb_nil(t))
-            {
-                printf("%d ", *(int *)rb_get_key(node));
-                node = rb_predecessor(t, node);
-            }
-            putchar('\n');
-        }
-        else if (!strcmp(command, "print-tree"))
-        {
             rb_print(t, int_print, 4);
         }
         else if (!strcmp(command, "quit"))

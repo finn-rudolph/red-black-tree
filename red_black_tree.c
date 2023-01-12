@@ -149,6 +149,46 @@ RbNode *rb_find(RbTree const *const t, void const *const restrict key)
     return x;
 }
 
+RbNode *rb_lower_bound(RbTree const *const t, void const *const restrict key)
+{
+    RbNode *x = t->root,
+           *y = t->nil; // Least node that is greater or equal.
+
+    while (x != t->nil)
+    {
+        int const c = (*t->compare)(key, x->key);
+        if (c <= 0 && (y == t->nil || (*t->compare)(x->key, y->key) <= 0))
+            y = x;
+
+        if (c <= 0)
+            x = x->left;
+        else if (c > 0)
+            x = x->right;
+    }
+
+    return y;
+}
+
+RbNode *rb_upper_bound(RbTree const *const t, void const *const restrict key)
+{
+    RbNode *x = t->root,
+           *y = t->nil; // Least greater node.
+
+    while (x != t->nil)
+    {
+        int const c = (*t->compare)(key, x->key);
+        if (c < 0 && (y == t->nil || (*t->compare)(x->key, y->key) <= 0))
+            y = x;
+
+        if (c < 0)
+            x = x->left;
+        else if (c >= 0)
+            x = x->right;
+    }
+
+    return y;
+}
+
 RbNode *rb_predecessor(RbTree const *const t, RbNode const *node)
 {
     if (node->left != t->nil)
