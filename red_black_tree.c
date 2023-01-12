@@ -471,6 +471,7 @@ void rb_print(
     size_t const height = rb_height(t, t->root);
     size_t curr_width = node_width * (1ULL << (height + 1));
 
+    // Stores nodes in heap order (used as a queue).
     RbNode **q = malloc((1ULL << (height + 1)) * sizeof *q);
     q[1] = t->root;
 
@@ -481,32 +482,20 @@ void rb_print(
             if (q[j] != t->nil)
             {
                 print_n_times((curr_width - node_width) / 2, ' ');
-
                 if (q[j]->color == RB_RED)
                     printf(ANSI_COLOR_RED);
-
                 (*print_key)(q[j]->key);
-
                 if (q[j]->color == RB_RED)
                     printf(ANSI_COLOR_RESET);
-
                 print_n_times((curr_width - node_width + 1) / 2, ' ');
-
-                if (j < (1ULL << height))
-                {
-                    q[2 * j] = q[j]->left;
-                    q[2 * j + 1] = q[j]->right;
-                }
             }
             else
-            {
                 print_n_times(curr_width, ' ');
 
-                if (j < (1ULL << height))
-                {
-                    q[2 * j] = t->nil;
-                    q[2 * j + 1] = t->nil;
-                }
+            if (j < (1ULL << height))
+            {
+                q[2 * j] = q[j] != t->nil ? q[j]->left : t->nil;
+                q[2 * j + 1] = q[j] != t->nil ? q[j]->right : t->nil;
             }
         }
 
