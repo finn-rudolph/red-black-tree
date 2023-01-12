@@ -34,6 +34,8 @@ RbNode *rb_insert(RbTree *const t, void const *const restrict key);
 
 void rb_delete(RbTree *const t, void const *const restrict key);
 
+void rb_delete_all(RbTree *const t);
+
 RbNode *rb_find(RbTree const *const t, void const *const restrict key);
 
 RbNode *rb_lower_bound(RbTree const *const t, void const *const restrict key);

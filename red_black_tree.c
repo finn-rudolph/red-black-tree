@@ -34,6 +34,22 @@ RbNode *rb_create_node(
     return z;
 }
 
+RbTree *rb_create(size_t key_size, rb_compare_fn compare)
+{
+    RbTree *t = malloc(sizeof *t);
+    t->key_size = key_size;
+    t->length = 0;
+    t->compare = compare;
+
+    t->nil = malloc(sizeof *t->nil);
+    t->nil->left = t->nil->right = t->nil->parent = t->nil;
+    t->nil->key = 0;
+    t->nil->color = RB_BLACK;
+    t->root = t->nil;
+
+    return t;
+}
+
 void rb_destroy_node(RbNode *const x)
 {
     free(x->key);
@@ -51,22 +67,6 @@ void rb_destroy_subtree(RbTree const *const t, RbNode *x)
 
     free(x->key);
     free(x);
-}
-
-RbTree *rb_create(size_t key_size, rb_compare_fn compare)
-{
-    RbTree *t = malloc(sizeof *t);
-    t->key_size = key_size;
-    t->length = 0;
-    t->compare = compare;
-
-    t->nil = malloc(sizeof *t->nil);
-    t->nil->left = t->nil->right = t->nil->parent = t->nil;
-    t->nil->key = 0;
-    t->nil->color = RB_BLACK;
-    t->root = t->nil;
-
-    return t;
 }
 
 void rb_destroy(RbTree *const t)
@@ -115,108 +115,6 @@ void rb_right_rotate(RbTree *const t, RbNode *const x)
 
     y->right = x;
     x->parent = y;
-}
-
-RbNode *rb_min_in_subtree(RbTree const *const t, RbNode *root)
-{
-    while (root->left != t->nil)
-        root = root->left;
-    return root;
-}
-
-RbNode *rb_max_in_subtree(RbTree const *const t, RbNode *root)
-{
-    while (root->right != t->nil)
-        root = root->right;
-    return root;
-}
-
-RbNode *rb_find(RbTree const *const t, void const *const restrict key)
-{
-    RbNode *x = t->root;
-
-    while (x != t->nil)
-    {
-        int const c = (*t->compare)(key, x->key);
-        if (c < 0)
-            x = x->left;
-        else if (c > 0)
-            x = x->right;
-        else
-            break;
-    }
-
-    return x;
-}
-
-RbNode *rb_lower_bound(RbTree const *const t, void const *const restrict key)
-{
-    RbNode *x = t->root,
-           *y = t->nil; // Least node that is greater or equal.
-
-    while (x != t->nil)
-    {
-        int const c = (*t->compare)(key, x->key);
-        if (c <= 0 && (y == t->nil || (*t->compare)(x->key, y->key) <= 0))
-            y = x;
-
-        if (c <= 0)
-            x = x->left;
-        else if (c > 0)
-            x = x->right;
-    }
-
-    return y;
-}
-
-RbNode *rb_upper_bound(RbTree const *const t, void const *const restrict key)
-{
-    RbNode *x = t->root,
-           *y = t->nil; // Least greater node.
-
-    while (x != t->nil)
-    {
-        int const c = (*t->compare)(key, x->key);
-        if (c < 0 && (y == t->nil || (*t->compare)(x->key, y->key) <= 0))
-            y = x;
-
-        if (c < 0)
-            x = x->left;
-        else if (c >= 0)
-            x = x->right;
-    }
-
-    return y;
-}
-
-RbNode *rb_predecessor(RbTree const *const t, RbNode const *node)
-{
-    if (node->left != t->nil)
-        return rb_max_in_subtree(t, node->left);
-
-    RbNode *y = node->parent;
-    while (y != t->nil && node == y->left)
-    {
-        node = y;
-        y = y->parent;
-    }
-
-    return y;
-}
-
-RbNode *rb_successor(RbTree const *const t, RbNode const *node)
-{
-    if (node->right != t->nil)
-        return rb_min_in_subtree(t, node->right);
-
-    RbNode *y = node->parent;
-    while (y != t->nil && node == y->right)
-    {
-        node = y;
-        y = y->parent;
-    }
-
-    return y;
 }
 
 void rb_insert_fixup(RbTree *const t, RbNode *z)
@@ -316,6 +214,20 @@ void rb_transplant(RbTree *const t, RbNode const *const u, RbNode *const v)
     else
         u->parent->right = v;
     v->parent = u->parent;
+}
+
+RbNode *rb_min_in_subtree(RbTree const *const t, RbNode *root)
+{
+    while (root->left != t->nil)
+        root = root->left;
+    return root;
+}
+
+RbNode *rb_max_in_subtree(RbTree const *const t, RbNode *root)
+{
+    while (root->right != t->nil)
+        root = root->right;
+    return root;
 }
 
 void rb_delete_fixup(RbTree *const t, RbNode *x)
@@ -444,6 +356,101 @@ void rb_delete(RbTree *const t, void const *const restrict key)
         rb_delete_node(t, z);
         rb_destroy_node(z);
     }
+}
+
+void rb_delete_all(RbTree *const t)
+{
+    if (t->root != t->nil)
+        rb_destroy_subtree(t, t->root);
+    t->root = t->nil;
+}
+
+RbNode *rb_find(RbTree const *const t, void const *const restrict key)
+{
+    RbNode *x = t->root;
+
+    while (x != t->nil)
+    {
+        int const c = (*t->compare)(key, x->key);
+        if (c < 0)
+            x = x->left;
+        else if (c > 0)
+            x = x->right;
+        else
+            break;
+    }
+
+    return x;
+}
+
+RbNode *rb_lower_bound(RbTree const *const t, void const *const restrict key)
+{
+    RbNode *x = t->root,
+           *y = t->nil; // Least node that is greater or equal.
+
+    while (x != t->nil)
+    {
+        int const c = (*t->compare)(key, x->key);
+        if (c <= 0 && (y == t->nil || (*t->compare)(x->key, y->key) <= 0))
+            y = x;
+
+        if (c <= 0)
+            x = x->left;
+        else if (c > 0)
+            x = x->right;
+    }
+
+    return y;
+}
+
+RbNode *rb_upper_bound(RbTree const *const t, void const *const restrict key)
+{
+    RbNode *x = t->root,
+           *y = t->nil; // Least greater node.
+
+    while (x != t->nil)
+    {
+        int const c = (*t->compare)(key, x->key);
+        if (c < 0 && (y == t->nil || (*t->compare)(x->key, y->key) <= 0))
+            y = x;
+
+        if (c < 0)
+            x = x->left;
+        else if (c >= 0)
+            x = x->right;
+    }
+
+    return y;
+}
+
+RbNode *rb_predecessor(RbTree const *const t, RbNode const *node)
+{
+    if (node->left != t->nil)
+        return rb_max_in_subtree(t, node->left);
+
+    RbNode *y = node->parent;
+    while (y != t->nil && node == y->left)
+    {
+        node = y;
+        y = y->parent;
+    }
+
+    return y;
+}
+
+RbNode *rb_successor(RbTree const *const t, RbNode const *node)
+{
+    if (node->right != t->nil)
+        return rb_min_in_subtree(t, node->right);
+
+    RbNode *y = node->parent;
+    while (y != t->nil && node == y->right)
+    {
+        node = y;
+        y = y->parent;
+    }
+
+    return y;
 }
 
 size_t rb_height(RbTree const *const t, RbNode const *const node)
