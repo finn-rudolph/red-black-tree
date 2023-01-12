@@ -22,6 +22,10 @@ Inserts the key pointed to into the tree and returns the newly created node.
 
 Deletes the given key from the tree.
 
+**`void rb_delete_all(RbTree *const t)`**
+
+Deletes all nodes from the tree, but leaves the tree itself valid. Calling this on any valid Red-Black Tree `t` puts `t` in a state as if it was just returned from `rb_create`.
+
 **`size_t rb_length(RbTree const *const t)`**
 
 Returns the number of elements in the tree.
@@ -29,6 +33,14 @@ Returns the number of elements in the tree.
 **`RbNode *rb_find(RbTree const *const t, void const *const restrict key)`**
 
 Returns a pointer to the node containing the given key or the nil-node, if the key does not exist.
+
+**`RbNode *rb_lower_bound(RbTree const *const t, void const *const restrict key)`**
+
+Returns a pointer to the first node with key greater or equal than the given key.
+
+**`RbNode *rb_upper_bound(RbTree const *const t, void const *const restrict key)`**
+
+Returns a pointer to the first node with key greater than the given key.
 
 **`RbNode *rb_min(RbTree const *const t)`**
 
