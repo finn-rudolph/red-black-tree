@@ -22,7 +22,7 @@ struct RbNode
 typedef struct RbTree RbTree;
 struct RbTree
 {
-    size_t key_size, length;
+    size_t key_size;
     rb_compare_fn compare;
     RbNode *root, *nil;
 };
@@ -79,7 +79,7 @@ inline RbNode *rb_nil(RbTree const *const t)
 
 inline size_t rb_length(RbTree const *const t)
 {
-    return t->length;
+    return t->root->subtree_size;
 }
 
 inline void *rb_get_key(RbNode const *const node)

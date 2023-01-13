@@ -39,7 +39,6 @@ RbTree *rb_create(size_t key_size, rb_compare_fn compare)
 {
     RbTree *t = malloc(sizeof *t);
     t->key_size = key_size;
-    t->length = 0;
     t->compare = compare;
 
     t->nil = malloc(sizeof *t->nil);
@@ -178,7 +177,6 @@ void rb_insert_fixup(RbTree *const t, RbNode *z)
 
 void rb_insert_node(RbTree *const t, RbNode *const z)
 {
-    t->length++;
     RbNode *y = t->nil, *x = t->root;
 
     // Go down to a leaf y and set z as the appropriate successor.
@@ -319,7 +317,6 @@ void rb_delete_fixup(RbTree *const t, RbNode *x)
 
 void rb_delete_node(RbTree *const t, RbNode *const z)
 {
-    t->length--;
     RbNode *y = z, *x = 0;
     bool y_ocolor = y->color;
 
@@ -591,7 +588,7 @@ size_t rb_count_less_eq(RbTree const *const t, void const *const restrict key)
 
 RbNode *rb_find_ith(RbTree const *const t, size_t i)
 {
-    assert(i < t->length);
+    assert(i < t->root->subtree_size);
 
     RbNode *z = t->root;
 
