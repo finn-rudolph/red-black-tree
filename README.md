@@ -6,7 +6,7 @@ To use the tree, include `red_black_tree.h`. Standard Red-Black Tree operations 
 
 **`RbTree *rb_create(size_t key_size, rb_compare_fn compare)`**
 
-Creates a new Red-Black Tree object and returns an `RbTree *` needed for further operations on the tree. The size of the keys to be stored as well as a comparison function (same form as for `qsort`) must be provided. Note that `RbTree` is not abstract (as well as `RbNode`), this allows declaring some functions as `inline`. However, the objects shall never be modified directly.
+Creates a new Red-Black Tree object and returns an `RbTree *` needed for further operations on the tree. The size of the keys to be stored as well as a comparison function must be provided. When the comparison function receives pointers to two keys `a` and `b`, the return value must be negative, if `a` is less than `b`, zero, if `a` equals `b`, and positive, if `a` is greater than `b` (same form as for `qsort`). Note that `RbTree` is not abstract (as well as `RbNode`), this allows declaring some functions as inline. However, the objects shall never be modified directly.
 
 **`void rb_destroy(RbTree *const t)`**
 

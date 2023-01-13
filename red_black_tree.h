@@ -8,7 +8,6 @@
 #define RB_RED 0
 #define RB_BLACK 1
 
-// return value: a < b -> negative, a == b -> 0, a > b -> positive
 typedef int (*rb_compare_fn)(void const *const a, void const *const b);
 
 typedef void (*rb_print_fn)(void const *const x);
