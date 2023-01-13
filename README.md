@@ -87,3 +87,5 @@ Finds a node having exactly i less or equal elements in the tree. (Or, equivalen
 **`void rb_print(RbTree const *const t, rb_print_fn print_key, size_t node_width)`**
 
 Prints the tree structure of the Red-Black Tree to the terminal. The user must provide a function of type `rb_print_fn` (defined in `red_black_tree.h`) which receives a `void *` of a node key and prints some string representing that node to Standard Output. Exactly `node_width` characters must be printed and new lines are not allowed. The printing function should try to center it's content if it does not span the whole width. Red nodes are automatically printed red.
+
+![](red-black-tree.png)
