@@ -1,3 +1,6 @@
+#ifndef RED_BLACK_TREE_H
+#define RED_BLACK_TREE_H 1
+
 #include <stddef.h>
 #include <stdbool.h>
 #include <stdio.h>
@@ -86,3 +89,5 @@ inline void *rb_get_key(RbNode const *const node)
 {
     return node->key;
 }
+
+#endif
